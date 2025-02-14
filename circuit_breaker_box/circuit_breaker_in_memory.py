@@ -5,13 +5,14 @@ import typing
 from cachetools import TTLCache
 
 from circuit_breaker_box import BaseCircuitBreaker, errors
+from circuit_breaker_box.circuit_breaker_base import RequestType, ResponseType
 
 
 logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(kw_only=True, slots=True)
-class CircuitBreakerInMemory(BaseCircuitBreaker):
+class CircuitBreakerInMemory(BaseCircuitBreaker[RequestType, ResponseType], typing.Generic[RequestType, ResponseType]):
     max_cache_size: int
     cache_hosts_with_errors: TTLCache[typing.Any, typing.Any] = dataclasses.field(init=False)
 

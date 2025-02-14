@@ -8,3 +8,7 @@ class BaseCircuitBreakerError(Exception):
 
 class HostUnavailableError(BaseCircuitBreakerError):
     pass
+
+
+class RetryFlowError(BaseCircuitBreakerError):
+    pass

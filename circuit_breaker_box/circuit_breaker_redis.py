@@ -8,6 +8,7 @@ from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import WatchError
 
 from circuit_breaker_box import BaseCircuitBreaker, errors
+from circuit_breaker_box.circuit_breaker_base import RequestType, ResponseType
 
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ def _log_attempt(retry_state: tenacity.RetryCallState) -> None:
 
 
 @dataclasses.dataclass(kw_only=True, slots=True)
-class CircuitBreakerRedis(BaseCircuitBreaker):
+class CircuitBreakerRedis(BaseCircuitBreaker[RequestType, ResponseType]):
     redis_connection: "aioredis.Redis[str]"
 
     @tenacity.retry(
