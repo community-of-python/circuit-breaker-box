@@ -5,7 +5,7 @@ import pytest
 from loguru import logger
 from redis import asyncio as aioredis
 
-from circuit_breaker.circuit_breaker import CircuitBreakerInMemory, CircuitBreakerRedis
+from circuit_breaker_box.circuit_breaker import CircuitBreakerInMemory, CircuitBreakerRedis
 from examples.example_circuit_breaker import CustomCircuitBreakerInMemory
 
 

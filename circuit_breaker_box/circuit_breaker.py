@@ -9,7 +9,7 @@ from redis import asyncio as aioredis
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import WatchError
 
-from circuit_breaker import errors
+from circuit_breaker_box import errors
 
 
 @dataclasses.dataclass(kw_only=True, slots=True)

@@ -1,4 +1,4 @@
-# Python Circuit Breaker
+# Python Circuit Breaker Box
 
 A Python implementation of the Circuit Breaker pattern with Redis and in-memory storage support.
 
@@ -15,7 +15,7 @@ A Python implementation of the Circuit Breaker pattern with Redis and in-memory 
 
 ## Installation
 ```bash
-pip install circuit-breaker
+pip install circuit-breaker-box
 ```
 
 ## Usage

@@ -3,7 +3,7 @@ import typing
 
 import fastapi
 
-from circuit_breaker.circuit_breaker import CircuitBreakerInMemory
+from circuit_breaker_box.circuit_breaker import CircuitBreakerInMemory
 
 
 HTTP_MAX_TRIES = 4

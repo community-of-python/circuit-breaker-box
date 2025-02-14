@@ -1,6 +1,5 @@
 [project]
-name = "circuit-breaker"
-version = "0"
+name = "circuit-breaker-box"
 description = "Implementation of the Circuit Breaker"
 readme = "README.md"
 requires-python = ">=3.10,<4"
@@ -11,6 +10,8 @@ dependencies = [
     "redis",
     "tenacity",
 ]
+dynamic = ["version"]
+authors = [{ name = "community-of-python" }]
 
 [dependency-groups]
 dev = [
@@ -24,6 +25,13 @@ dev = [
     "types-cachetools",
     "typing-extensions",
 ]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.mypy]
 python_version = "3.10"

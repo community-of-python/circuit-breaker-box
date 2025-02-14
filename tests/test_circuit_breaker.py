@@ -1,8 +1,8 @@
 import fastapi
 import pytest
 
-from circuit_breaker import errors
-from circuit_breaker.circuit_breaker import CircuitBreakerInMemory, CircuitBreakerRedis
+from circuit_breaker_box import errors
+from circuit_breaker_box.circuit_breaker import CircuitBreakerInMemory, CircuitBreakerRedis
 from examples.example_circuit_breaker import CustomCircuitBreakerInMemory
 from tests.conftest import HTTP_MAX_TRIES, SOME_HOST
 
