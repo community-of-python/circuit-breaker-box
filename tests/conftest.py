@@ -1,13 +1,15 @@
 import dataclasses
+import logging
 import typing
 
 import pytest
-from loguru import logger
 from redis import asyncio as aioredis
 
-from circuit_breaker_box.circuit_breaker import CircuitBreakerInMemory, CircuitBreakerRedis
+from circuit_breaker_box import CircuitBreakerInMemory, CircuitBreakerRedis
 from examples.example_circuit_breaker import CustomCircuitBreakerInMemory
 
+
+logger = logging.getLogger(__name__)
 
 HTTP_MAX_TRIES = 4
 MAX_CACHE_SIZE = 256
@@ -21,16 +23,16 @@ class TestRedisConnection(aioredis.Redis):  # type: ignore[type-arg]
     errors: int = 0
 
     async def incr(self, host: str | bytes, amount: int = 1) -> int:
-        logger.debug(f"host: {host!s}, amount: {amount}")
+        logger.debug("host: %s, amount: %d{amount}", host, amount)
         self.errors = self.errors + 1
         return amount + 1
 
     async def expire(self, *args: typing.Any, **kwargs: typing.Any) -> bool:  # noqa: ANN401
-        logger.debug(f"{args=}, {kwargs=}")
+        logger.debug(args, kwargs)
         return True
 
     async def get(self, host: str | bytes) -> int:
-        logger.debug(f"host: {host!s}, errors: {self.errors}")
+        logger.debug("host: %s, errors: %s", host, self.errors)
         return self.errors
 
 

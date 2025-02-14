@@ -1,16 +1,17 @@
 import asyncio
+import logging
 import typing
 
 import fastapi
 
-from circuit_breaker_box.circuit_breaker import CircuitBreakerInMemory
+from circuit_breaker_box import CircuitBreakerInMemory
 
 
 HTTP_MAX_TRIES = 4
 MAX_CACHE_SIZE = 256
 CIRCUIT_BREAKER_MAX_FAILURE_COUNT = 1
 RESET_TIMEOUT_IN_SECONDS = 10
-SOME_HOST = "some_host"
+SOME_HOST = "http://example.com/"
 
 
 class CustomCircuitBreakerInMemory(CircuitBreakerInMemory):
@@ -19,6 +20,7 @@ class CustomCircuitBreakerInMemory(CircuitBreakerInMemory):
 
 
 async def main() -> None:
+    logging.basicConfig(level=logging.DEBUG)
     circuit_breaker = CustomCircuitBreakerInMemory(
         reset_timeout_in_seconds=RESET_TIMEOUT_IN_SECONDS,
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,

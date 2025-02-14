@@ -6,7 +6,6 @@ requires-python = ">=3.10,<4"
 dependencies = [
     "cachetools",
     "httpx",
-    "loguru",
     "redis",
     "tenacity",
 ]
@@ -79,6 +78,6 @@ run.concurrency = ["thread"]
 report.exclude_also = ["if typing.TYPE_CHECKING:"]
 
 [project.urls]
-Issues = "https://github.com/community-of-python/circuit-breaker-box/issues"
 Repository = "https://github.com/community-of-python/circuit-breaker-box"
+Issues = "https://github.com/community-of-python/circuit-breaker-box/issues"
 Changelogs = "https://github.com/community-of-python/circuit-breaker-box/releases"
