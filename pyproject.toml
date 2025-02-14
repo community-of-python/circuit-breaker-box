@@ -12,6 +12,16 @@ dependencies = [
 ]
 dynamic = ["version"]
 authors = [{ name = "community-of-python" }]
+keywords = [
+    "python",
+]
+classifiers = [
+    "Typing :: Typed",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 
 [dependency-groups]
 dev = [
@@ -67,3 +77,8 @@ asyncio_default_fixture_loop_scope = "function"
 [tool.coverage]
 run.concurrency = ["thread"]
 report.exclude_also = ["if typing.TYPE_CHECKING:"]
+
+[project.urls]
+Issues = "https://github.com/community-of-python/circuit-breaker-box/issues"
+Repository = "https://github.com/community-of-python/circuit-breaker-box"
+Changelogs = "https://github.com/community-of-python/circuit-breaker-box/releases"
