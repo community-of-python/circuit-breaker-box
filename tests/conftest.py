@@ -6,7 +6,7 @@ import httpx
 import pytest
 from redis import asyncio as aioredis
 
-from circuit_breaker_box import CircuitBreakerInMemory, Retryer, RetryerCircuitBreaker
+from circuit_breaker_box import CircuitBreakerInMemory, Retrier, RetrierCircuitBreaker
 from circuit_breaker_box.circuit_breaker_redis import CircuitBreakerRedis
 from examples.example_retry_circuit_breaker import CustomCircuitBreakerInMemory
 
@@ -66,8 +66,8 @@ def fixture_custom_circuit_breaker_in_memory() -> CustomCircuitBreakerInMemory:
 
 
 @pytest.fixture(name="test_retry_without_circuit_breaker")
-def fixture_retry_without_circuit_breaker() -> Retryer[httpx.Response]:
-    return Retryer[httpx.Response](
+def fixture_retry_without_circuit_breaker() -> Retrier[httpx.Response]:
+    return Retrier[httpx.Response](
         max_retries=MAX_RETRIES,
         exceptions_to_retry=(ZeroDivisionError,),
     )
@@ -76,8 +76,8 @@ def fixture_retry_without_circuit_breaker() -> Retryer[httpx.Response]:
 @pytest.fixture(name="test_retry_custom_circuit_breaker_in_memory")
 def fixture_retry_custom_circuit_breaker_in_memory(
     test_custom_circuit_breaker_in_memory: CustomCircuitBreakerInMemory,
-) -> RetryerCircuitBreaker[httpx.Response]:
-    return RetryerCircuitBreaker[httpx.Response](
+) -> RetrierCircuitBreaker[httpx.Response]:
+    return RetrierCircuitBreaker[httpx.Response](
         circuit_breaker=test_custom_circuit_breaker_in_memory,
         max_retries=MAX_RETRIES,
         exceptions_to_retry=(ZeroDivisionError,),

@@ -3,7 +3,7 @@ import logging
 
 import httpx
 
-from circuit_breaker_box.retryers import Retryer
+from circuit_breaker_box.retryers import Retrier
 
 
 MAX_RETRIES = 4
@@ -15,7 +15,7 @@ SOME_HOST = "http://example.com/"
 
 async def main() -> None:
     logging.basicConfig(level=logging.DEBUG)
-    retryer = Retryer[httpx.Response](
+    retryer = Retrier[httpx.Response](
         max_retries=MAX_RETRIES,
         exceptions_to_retry=(ZeroDivisionError,),
     )

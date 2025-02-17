@@ -14,7 +14,7 @@ P = typing.ParamSpec("P")
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseRetryer(abc.ABC, typing.Generic[ResponseType]):
+class BaseRetrier(abc.ABC, typing.Generic[ResponseType]):
     max_retries: int
     reraise: bool = True
     exceptions_to_retry: tuple[type[Exception]]

@@ -4,7 +4,7 @@ import typing
 
 import tenacity
 
-from circuit_breaker_box import BaseCircuitBreaker, BaseRetryer, ResponseType, errors
+from circuit_breaker_box import BaseCircuitBreaker, BaseRetrier, ResponseType
 
 
 logger = logging.getLogger(__name__)
@@ -13,14 +13,14 @@ P = typing.ParamSpec("P")
 
 
 @dataclasses.dataclass(kw_only=True)
-class Retryer(BaseRetryer[ResponseType]):
-    async def retry(
+class Retrier(BaseRetrier[ResponseType]):
+    async def retry(  # type: ignore[return]
         self,
         coroutine: typing.Callable[P, typing.Awaitable[ResponseType]],
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> ResponseType:
-        for attempt in tenacity.Retrying(
+        for attempt in tenacity.Retrying(  # noqa: RET503
             stop=self.stop,
             wait=self.wait_strategy,
             retry=self.retry_cause,
@@ -30,14 +30,12 @@ class Retryer(BaseRetryer[ResponseType]):
             with attempt:
                 return await coroutine(*args, **kwargs)
 
-        raise errors.RetryFlowError
-
 
 @dataclasses.dataclass(kw_only=True)
-class RetryerCircuitBreaker(BaseRetryer[ResponseType]):
+class RetrierCircuitBreaker(BaseRetrier[ResponseType]):
     circuit_breaker: BaseCircuitBreaker
 
-    async def retry(
+    async def retry(  # type: ignore[return]
         self,
         coroutine: typing.Callable[P, typing.Awaitable[ResponseType]],
         *args: P.args,
@@ -47,7 +45,7 @@ class RetryerCircuitBreaker(BaseRetryer[ResponseType]):
             msg = "'host' argument should be defined"
             raise ValueError(msg)
 
-        for attempt in tenacity.Retrying(
+        for attempt in tenacity.Retrying(  # noqa: RET503
             stop=self.stop,
             wait=self.wait_strategy,
             retry=self.retry_cause,
@@ -62,5 +60,3 @@ class RetryerCircuitBreaker(BaseRetryer[ResponseType]):
                     await self.circuit_breaker.increment_failures_count(host)
 
                 return await coroutine(*args, **kwargs)
-
-        raise errors.RetryFlowError

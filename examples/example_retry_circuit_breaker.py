@@ -5,7 +5,7 @@ import typing
 import fastapi
 import httpx
 
-from circuit_breaker_box import CircuitBreakerInMemory, RetryerCircuitBreaker
+from circuit_breaker_box import CircuitBreakerInMemory, RetrierCircuitBreaker
 
 
 MAX_RETRIES = 4
@@ -27,7 +27,7 @@ async def main() -> None:
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         max_cache_size=MAX_CACHE_SIZE,
     )
-    retryer = RetryerCircuitBreaker[httpx.Response](
+    retryer = RetrierCircuitBreaker[httpx.Response](
         circuit_breaker=circuit_breaker,
         max_retries=MAX_RETRIES,
         exceptions_to_retry=(ZeroDivisionError,),
