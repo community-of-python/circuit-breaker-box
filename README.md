@@ -1,11 +1,10 @@
 # Python Circuit Breaker Box
 
-A Python implementation of the Circuit Breaker pattern with Redis and in-memory storage support.
+A Python implementation of the Circuit Breaker pattern.
 
 ## Features
 
 - 🚀 Implementations:
-  - **Redis-based**
   - **In-memory**
 - [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=FFD43B)](https://python.org) 3.10-3.13 support.
 - ⚡ Asynchronous API
