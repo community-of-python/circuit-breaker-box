@@ -37,7 +37,7 @@ async def main() -> None:
     async def foo(request: httpx.Request, host: str) -> httpx.Response:  # noqa: ARG001
         raise ZeroDivisionError
 
-    # will rase exception from circuit_breaker.raise_host_unavailable_error
+    # will raise exception from circuit_breaker.raise_host_unavailable_error
     await retryer.retry(coroutine=foo, request=example_request, host=example_request.url.host)
 
 

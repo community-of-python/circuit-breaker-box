@@ -21,10 +21,10 @@ class Retryer(BaseRetryer[ResponseType]):
         **kwargs: P.kwargs,
     ) -> ResponseType:
         for attempt in tenacity.Retrying(
-            stop=tenacity.stop_after_attempt(self.max_retries),
-            wait=tenacity.wait_exponential_jitter(),
-            retry=tenacity.retry_if_exception_type(self.exceptions_to_retry),
-            reraise=True,
+            stop=self.stop,
+            wait=self.wait_strategy,
+            retry=self.retry_cause,
+            reraise=self.reraise,
             before=self._log_attempts,
         ):
             with attempt:
@@ -48,10 +48,10 @@ class RetryerCircuitBreaker(BaseRetryer[ResponseType]):
             raise ValueError(msg)
 
         for attempt in tenacity.Retrying(
-            stop=tenacity.stop_after_attempt(self.max_retries),
-            wait=tenacity.wait_exponential_jitter(),
-            retry=tenacity.retry_if_exception_type(self.exceptions_to_retry),
-            reraise=True,
+            stop=self.stop,
+            wait=self.wait_strategy,
+            retry=self.retry_cause,
+            reraise=self.reraise,
             before=self._log_attempts,
         ):
             with attempt:
