@@ -27,15 +27,15 @@ async def main() -> None:
         reset_timeout_in_seconds=RESET_TIMEOUT_IN_SECONDS,
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         max_cache_size=MAX_CACHE_SIZE,
-        exceptions_to_retry=[ZeroDivisionError],
+        exceptions_to_retry=(ZeroDivisionError,),
     )
 
     example_request = httpx.Request("GET", httpx.URL("http://example.com"))
 
-    async def foo(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
+    async def foo(_: httpx.Request) -> httpx.Response:
         raise ZeroDivisionError
 
-    await circuit_breaker.retry(awaitable=foo, request=example_request)
+    await circuit_breaker.retry(awaitable=foo, request=example_request, host=example_request.url.host)
 
 
 if __name__ == "__main__":

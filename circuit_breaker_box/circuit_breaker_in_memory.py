@@ -12,9 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(kw_only=True, slots=True)
-class CircuitBreakerInMemory(BaseCircuitBreaker[RequestType, ResponseType], typing.Generic[RequestType, ResponseType]):
+class CircuitBreakerInMemory(BaseCircuitBreaker[RequestType, ResponseType]):
     max_cache_size: int
     cache_hosts_with_errors: TTLCache[typing.Any, typing.Any] = dataclasses.field(init=False)
+    max_retries: int = 3
 
     def __post_init__(self) -> None:
         self.cache_hosts_with_errors: TTLCache[typing.Any, typing.Any] = TTLCache(

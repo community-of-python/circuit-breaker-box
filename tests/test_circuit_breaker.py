@@ -14,17 +14,19 @@ async def test_circuit_breaker_in_memory(
 ) -> None:
     test_request = httpx.AsyncClient().build_request(method="GET", url=SOME_HOST)
 
-    async def bar(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
+    async def bar(_: httpx.Request) -> httpx.Response:
         return httpx.Response(status_code=httpx.codes.OK)
 
-    response = await test_circuit_breaker_in_memory.retry(awaitable=bar, request=test_request)
+    response = await test_circuit_breaker_in_memory.retry(
+        awaitable=bar, request=test_request, host=test_request.url.host
+    )
     assert response.status_code == httpx.codes.OK
 
-    async def foo(request: httpx.Request) -> typing.NoReturn:  # noqa: ARG001
+    async def foo(_: httpx.Request) -> typing.NoReturn:
         raise ZeroDivisionError
 
     with pytest.raises(errors.HostUnavailableError):
-        await test_circuit_breaker_in_memory.retry(awaitable=foo, request=test_request)
+        await test_circuit_breaker_in_memory.retry(awaitable=foo, request=test_request, host=test_request.url.host)
 
 
 async def test_circuit_breaker_redis(
@@ -32,17 +34,17 @@ async def test_circuit_breaker_redis(
 ) -> None:
     test_request = httpx.AsyncClient().build_request(method="GET", url=SOME_HOST)
 
-    async def bar(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
+    async def bar(_: httpx.Request) -> httpx.Response:
         return httpx.Response(status_code=httpx.codes.OK)
 
-    response = await test_circuit_breaker_redis.retry(awaitable=bar, request=test_request)
+    response = await test_circuit_breaker_redis.retry(awaitable=bar, request=test_request, host=test_request.url.host)
     assert response.status_code == httpx.codes.OK
 
-    async def foo(request: httpx.Request) -> typing.NoReturn:  # noqa: ARG001
+    async def foo(_: httpx.Request) -> typing.NoReturn:
         raise ZeroDivisionError
 
     with pytest.raises(errors.HostUnavailableError):
-        await test_circuit_breaker_redis.retry(awaitable=foo, request=test_request)
+        await test_circuit_breaker_redis.retry(awaitable=foo, request=test_request, host=test_request.url.host)
 
 
 async def test_custom_circuit_breaker_in_memory(
@@ -50,14 +52,18 @@ async def test_custom_circuit_breaker_in_memory(
 ) -> None:
     test_request = httpx.AsyncClient().build_request(method="GET", url=SOME_HOST)
 
-    async def bar(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
+    async def bar(_: httpx.Request) -> httpx.Response:
         return httpx.Response(status_code=httpx.codes.OK)
 
-    response = await test_custom_circuit_breaker_in_memory.retry(awaitable=bar, request=test_request)
+    response = await test_custom_circuit_breaker_in_memory.retry(
+        awaitable=bar, request=test_request, host=test_request.url.host
+    )
     assert response.status_code == httpx.codes.OK
 
-    async def foo(request: httpx.Request) -> typing.NoReturn:  # noqa: ARG001
+    async def foo(_: httpx.Request) -> typing.NoReturn:
         raise ZeroDivisionError
 
     with pytest.raises(fastapi.exceptions.HTTPException):
-        await test_custom_circuit_breaker_in_memory.retry(awaitable=foo, request=test_request)
+        await test_custom_circuit_breaker_in_memory.retry(
+            awaitable=foo, request=test_request, host=test_request.url.host
+        )

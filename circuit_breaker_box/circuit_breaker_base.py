@@ -3,7 +3,6 @@ import dataclasses
 import logging
 import typing
 
-import httpx
 import tenacity
 
 from circuit_breaker_box import errors
@@ -12,16 +11,7 @@ from circuit_breaker_box import errors
 logger = logging.getLogger(__name__)
 
 
-class UrlProtocol(typing.Protocol):
-    host: str
-
-
-class RequestProtocol(typing.Protocol):
-    method: str
-    url: httpx.URL
-
-
-RequestType = typing.TypeVar("RequestType", bound=RequestProtocol)
+RequestType = typing.TypeVar("RequestType")
 ResponseType = typing.TypeVar("ResponseType")
 
 
@@ -29,8 +19,8 @@ ResponseType = typing.TypeVar("ResponseType")
 class BaseCircuitBreaker(typing.Generic[RequestType, ResponseType]):
     reset_timeout_in_seconds: int
     max_failure_count: int
-    max_retries: int = 3
-    exceptions_to_retry: typing.Sequence[type[Exception]]
+    exceptions_to_retry: tuple[type[Exception]]
+    max_retries: int
 
     @abc.abstractmethod
     async def increment_failures_count(self, host: str) -> None: ...
@@ -45,21 +35,22 @@ class BaseCircuitBreaker(typing.Generic[RequestType, ResponseType]):
         self,
         awaitable: typing.Callable[[RequestType], typing.Awaitable[ResponseType]],
         request: RequestType,
+        host: str,
         max_retries: int | None = None,
     ) -> ResponseType:
         async for attempt in tenacity.AsyncRetrying(
             stop=tenacity.stop_after_attempt(max_retries if max_retries else self.max_retries),
             wait=tenacity.wait_exponential_jitter(),
-            retry=tenacity.retry_if_exception_type(tuple(self.exceptions_to_retry)),
+            retry=tenacity.retry_if_exception_type(self.exceptions_to_retry),
             reraise=True,
             before=self._log_attempts,
         ):
             with attempt:
-                if not await self.is_host_available(request.url.host):
-                    await self.raise_host_unavailable_error(request.url.host)
+                if not await self.is_host_available(host):
+                    await self.raise_host_unavailable_error(host)
 
                 if attempt.retry_state.attempt_number > 1:
-                    await self.increment_failures_count(request.url.host)
+                    await self.increment_failures_count(host)
 
                 return await awaitable(request)
 

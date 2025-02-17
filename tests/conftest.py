@@ -44,7 +44,7 @@ def fixture_circuit_breaker_in_memory() -> CircuitBreakerInMemory[httpx.Request,
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         max_cache_size=MAX_CACHE_SIZE,
         max_retries=MAX_RETRIES,
-        exceptions_to_retry=[ZeroDivisionError],
+        exceptions_to_retry=(ZeroDivisionError,),
     )
 
 
@@ -55,7 +55,7 @@ def fixture_circuit_breaker_redis() -> CircuitBreakerRedis[httpx.Request, httpx.
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         redis_connection=TestRedisConnection(),
         max_retries=MAX_RETRIES,
-        exceptions_to_retry=[Exception],
+        exceptions_to_retry=(ZeroDivisionError,),
     )
 
 
@@ -66,5 +66,5 @@ def fixture_custom_circuit_breaker_in_memory() -> CustomCircuitBreakerInMemory[h
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         max_cache_size=MAX_CACHE_SIZE,
         max_retries=MAX_RETRIES,
-        exceptions_to_retry=[Exception],
+        exceptions_to_retry=(ZeroDivisionError,),
     )

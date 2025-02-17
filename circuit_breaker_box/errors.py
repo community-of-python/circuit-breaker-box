@@ -11,4 +11,4 @@ class HostUnavailableError(BaseCircuitBreakerError):
 
 
 class RetryFlowError(BaseCircuitBreakerError):
-    pass
+    """Error should never happen. If it happens, it means that the retry flow is not correct."""

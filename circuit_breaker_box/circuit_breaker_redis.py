@@ -21,6 +21,7 @@ def _log_attempt(retry_state: tenacity.RetryCallState) -> None:
 @dataclasses.dataclass(kw_only=True, slots=True)
 class CircuitBreakerRedis(BaseCircuitBreaker[RequestType, ResponseType]):
     redis_connection: "aioredis.Redis[str]"
+    max_retries: int = 3
 
     @tenacity.retry(
         stop=tenacity.stop_after_attempt(3),
