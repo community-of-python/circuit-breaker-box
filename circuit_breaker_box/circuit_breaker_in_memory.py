@@ -10,7 +10,7 @@ from circuit_breaker_box import BaseCircuitBreaker, errors
 logger = logging.getLogger(__name__)
 
 
-@dataclasses.dataclass(kw_only=True, slots=True)
+@dataclasses.dataclass(kw_only=True)
 class CircuitBreakerInMemory(BaseCircuitBreaker):
     max_cache_size: int
     cache_hosts_with_errors: TTLCache[typing.Any, typing.Any] = dataclasses.field(init=False)

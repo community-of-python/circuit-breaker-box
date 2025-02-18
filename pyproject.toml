@@ -4,6 +4,7 @@ description = "Implementation of the Circuit Breaker"
 readme = "README.md"
 requires-python = ">=3.10,<4"
 dependencies = [
+    "asyncio>=3.4.3",
     "cachetools",
     "httpx",
     "redis",

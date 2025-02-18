@@ -4,7 +4,7 @@ import typing
 
 
 @dataclasses.dataclass(kw_only=True, slots=True)
-class BaseCircuitBreaker:
+class BaseCircuitBreaker(abc.ABC):
     reset_timeout_in_seconds: int
     max_failure_count: int
 

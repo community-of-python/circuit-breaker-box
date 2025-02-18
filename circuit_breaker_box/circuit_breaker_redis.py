@@ -17,7 +17,7 @@ def _log_attempt(retry_state: tenacity.RetryCallState) -> None:
     logger.info("Attempt redis_reconnect: %s", retry_state)
 
 
-@dataclasses.dataclass(kw_only=True, slots=True)
+@dataclasses.dataclass(kw_only=True)
 class CircuitBreakerRedis(BaseCircuitBreaker):
     redis_connection: "aioredis.Redis[str]"
 
