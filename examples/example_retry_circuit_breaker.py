@@ -30,15 +30,15 @@ async def main() -> None:
     retryer = RetrierCircuitBreaker[httpx.Response](
         circuit_breaker=circuit_breaker,
         max_retries=MAX_RETRIES,
-        exceptions_to_retry=(ZeroDivisionError,),
+        exceptions_to_retry=(ZeroDivisionError, httpx.RequestError),
     )
     example_request = httpx.Request("GET", httpx.URL("http://example.com"))
 
-    async def foo(request: httpx.Request, host: str) -> httpx.Response:  # noqa: ARG001
+    async def foo(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
         raise ZeroDivisionError
 
     # will raise exception from circuit_breaker.raise_host_unavailable_error
-    await retryer.retry(coroutine=foo, request=example_request, host=example_request.url.host)
+    await retryer.retry(foo, example_request.url.host, example_request)
 
 
 if __name__ == "__main__":

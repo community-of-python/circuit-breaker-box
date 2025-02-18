@@ -17,6 +17,7 @@ class Retrier(BaseRetrier[ResponseType]):
     async def retry(  # type: ignore[return]
         self,
         coroutine: typing.Callable[P, typing.Awaitable[ResponseType]],
+        /,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> ResponseType:
@@ -38,10 +39,12 @@ class RetrierCircuitBreaker(BaseRetrier[ResponseType]):
     async def retry(  # type: ignore[return]
         self,
         coroutine: typing.Callable[P, typing.Awaitable[ResponseType]],
+        /,
+        host: str,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> ResponseType:
-        if not (host := str(kwargs.get("host", ""))):
+        if not host:
             msg = "'host' argument should be defined"
             raise ValueError(msg)
 
