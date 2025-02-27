@@ -19,7 +19,7 @@ pip install circuit-breaker-box
 ```
 
 ## Usage
-See -> [Examples](examples/example_circuit_breaker.py)
+See -> [Examples](examples/)
 
 ## Development
 ### Commands
