@@ -21,10 +21,10 @@ async def main() -> None:
     )
     example_request = httpx.Request("GET", httpx.URL("http://example.com"))
 
-    async def foo(request: httpx.Request, host: str) -> httpx.Response:  # noqa: ARG001
+    async def foo(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
         raise ZeroDivisionError
 
-    await retryer.retry(foo, request=example_request, host=example_request.url.host)
+    await retryer.retry(foo, request=example_request)
 
 
 if __name__ == "__main__":
