@@ -2,24 +2,23 @@ import asyncio
 import logging
 
 import httpx
+import tenacity
 
-from circuit_breaker_box.retryers import Retrier
+from circuit_breaker_box.retryer import Retrier
 
 
 MAX_RETRIES = 4
-MAX_CACHE_SIZE = 256
-CIRCUIT_BREAKER_MAX_FAILURE_COUNT = 3
-RESET_TIMEOUT_IN_SECONDS = 10
 SOME_HOST = "http://example.com/"
 
 
 async def main() -> None:
     logging.basicConfig(level=logging.DEBUG)
     retryer = Retrier[httpx.Response](
-        max_retries=MAX_RETRIES,
-        exceptions_to_retry=(ZeroDivisionError,),
+        stop_rule=tenacity.stop.stop_after_attempt(MAX_RETRIES),
+        retry_cause=tenacity.retry_if_exception_type(ZeroDivisionError),
+        wait_strategy=tenacity.wait_none(),
     )
-    example_request = httpx.Request("GET", httpx.URL("http://example.com"))
+    example_request = httpx.Request("GET", httpx.URL(SOME_HOST))
 
     async def foo(request: httpx.Request) -> httpx.Response:  # noqa: ARG001
         raise ZeroDivisionError

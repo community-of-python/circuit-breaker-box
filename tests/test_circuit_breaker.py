@@ -7,7 +7,7 @@ from examples.example_retry_circuit_breaker import CustomCircuitBreakerInMemory
 from tests.conftest import MAX_RETRIES, SOME_HOST
 
 
-async def test_circuit_breaker_in_memory(test_circuit_breaker_in_memory: CircuitBreakerInMemory) -> None:
+async def test_circuit_breaker_in_memory_cash(test_circuit_breaker_in_memory: CircuitBreakerInMemory) -> None:
     assert await test_circuit_breaker_in_memory.is_host_available(host=SOME_HOST)
 
     for _ in range(MAX_RETRIES):
@@ -19,7 +19,7 @@ async def test_circuit_breaker_in_memory(test_circuit_breaker_in_memory: Circuit
         await test_circuit_breaker_in_memory.raise_host_unavailable_error(host=SOME_HOST)
 
 
-async def test_circuit_breaker_redis(test_circuit_breaker_redis: CircuitBreakerRedis) -> None:
+async def test_circuit_breaker_with_redis(test_circuit_breaker_redis: CircuitBreakerRedis) -> None:
     assert await test_circuit_breaker_redis.is_host_available(host=SOME_HOST)
 
     for _ in range(MAX_RETRIES):
@@ -31,7 +31,7 @@ async def test_circuit_breaker_redis(test_circuit_breaker_redis: CircuitBreakerR
         await test_circuit_breaker_redis.raise_host_unavailable_error(host=SOME_HOST)
 
 
-async def test_custom_circuit_breaker_in_memory(
+async def test_custom_circuit_breaker_in_memory_cash(
     test_custom_circuit_breaker_in_memory: CustomCircuitBreakerInMemory,
 ) -> None:
     assert await test_custom_circuit_breaker_in_memory.is_host_available(host=SOME_HOST)
