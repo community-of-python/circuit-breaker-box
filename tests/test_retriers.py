@@ -4,7 +4,7 @@ import fastapi.exceptions
 import httpx
 import pytest
 
-from circuit_breaker_box import Retrier, RetrierCircuitBreaker
+from circuit_breaker_box import Retrier
 from tests.conftest import SOME_HOST
 
 
@@ -27,7 +27,7 @@ async def test_retry(
 
 
 async def test_retry_custom_circuit_breaker(
-    test_retry_custom_circuit_breaker_in_memory: RetrierCircuitBreaker[httpx.Response],
+    test_retry_custom_circuit_breaker_in_memory: Retrier[httpx.Response],
 ) -> None:
     test_request = httpx.AsyncClient().build_request(method="GET", url=SOME_HOST)
 

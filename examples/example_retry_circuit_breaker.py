@@ -4,8 +4,9 @@ import typing
 
 import fastapi
 import httpx
+import tenacity
 
-from circuit_breaker_box import CircuitBreakerInMemory, RetrierCircuitBreaker
+from circuit_breaker_box import CircuitBreakerInMemory, Retrier
 
 
 MAX_RETRIES = 4
@@ -27,10 +28,11 @@ async def main() -> None:
         max_failure_count=CIRCUIT_BREAKER_MAX_FAILURE_COUNT,
         max_cache_size=MAX_CACHE_SIZE,
     )
-    retryer = RetrierCircuitBreaker[httpx.Response](
+    retryer = Retrier[httpx.Response](
         circuit_breaker=circuit_breaker,
-        max_retries=MAX_RETRIES,
-        exceptions_to_retry=(ZeroDivisionError, httpx.RequestError),
+        wait_strategy=tenacity.wait_exponential_jitter(),
+        retry_cause=tenacity.retry_if_exception_type((ZeroDivisionError, httpx.RequestError)),
+        stop_rule=tenacity.stop.stop_after_attempt(MAX_RETRIES),
     )
     example_request = httpx.Request("GET", httpx.URL("http://example.com"))
 
