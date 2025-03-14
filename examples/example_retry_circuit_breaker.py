@@ -22,6 +22,11 @@ class CustomCircuitBreakerInMemory(CircuitBreakerInMemory):
 
 
 async def main() -> None:
+    """Use Retrier with CustomCircuitBreakerInMemory or CircuitBreakerRedis.
+
+    coordinated retry/circuit breaking logic,
+    also you can redefine raise_host_unavailable_error to raise some custom error in your application.
+    """
     logging.basicConfig(level=logging.DEBUG)
     circuit_breaker = CustomCircuitBreakerInMemory(
         reset_timeout_in_seconds=RESET_TIMEOUT_IN_SECONDS,
