@@ -39,7 +39,8 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
             wait=self.wait_strategy,
             retry=self.retry_cause,
             reraise=self.reraise,
-            before=self._log_attempts,
+            before=self.do_before_attempts,
+            after=self.do_after_attempts,
         ):
             with attempt:
                 if self.circuit_breaker and host:
@@ -52,9 +53,13 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
                 return await coroutine(*args, **kwargs)
 
     @staticmethod
-    def _log_attempts(retry_state: tenacity.RetryCallState) -> None:
-        logger.info(
-            "Attempt: attempt_number: %s, outcome_timestamp: %s",
+    def do_before_attempts(retry_state: tenacity.RetryCallState) -> None:
+        pass
+
+    @staticmethod
+    def do_after_attempts(retry_state: tenacity.RetryCallState) -> None:
+        logger.warning(
+            "Attempt: attempt_number: %s, result: %s",
             retry_state.attempt_number,
-            retry_state.outcome_timestamp,
+            str(retry_state.outcome).split("state=")[-1],
         )
