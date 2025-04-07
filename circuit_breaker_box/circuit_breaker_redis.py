@@ -45,7 +45,7 @@ class CircuitBreakerRedis(BaseCircuitBreaker):
     async def is_host_available(self, host: str) -> bool:
         failures_count: typing.Final = int(await self.redis_connection.get(f"circuit-breaker-{host}") or 0)
         is_available: bool = failures_count <= self.max_failure_count
-        logger.debug(
+        logger.warning(
             "host: '%s', failures_count: '%s', self.max_failure_count: '%s', is_available: '%s'",
             host,
             failures_count,
@@ -55,5 +55,5 @@ class CircuitBreakerRedis(BaseCircuitBreaker):
         return is_available
 
     async def raise_host_unavailable_error(self, host: str) -> typing.NoReturn:
-        msg = f"Host {host} is unavailable"
+        msg = f"Host {host} banned by circutbreaker for {(self.reset_timeout_in_seconds / 60):.2f} minutes."
         raise errors.HostUnavailableError(msg)

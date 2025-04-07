@@ -41,5 +41,5 @@ class CircuitBreakerInMemory(BaseCircuitBreaker):
         return is_available
 
     async def raise_host_unavailable_error(self, host: str) -> typing.NoReturn:
-        msg = f"Host {host} is unavailable"
+        msg = f"Host {host} banned by circutbreaker for {(self.reset_timeout_in_seconds / 60):.2f} minutes."
         raise errors.HostUnavailableError(msg)
