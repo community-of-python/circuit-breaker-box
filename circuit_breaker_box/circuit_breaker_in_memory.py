@@ -21,7 +21,7 @@ class CircuitBreakerInMemory(BaseCircuitBreaker):
         )
 
     async def increment_failures_count(self, host: str) -> None:
-        if host in self.cache_hosts_with_errors:
+        if host in self.cache_hosts_with_errors and (await self.is_host_available(host)):
             self.cache_hosts_with_errors[host] = self.cache_hosts_with_errors[host] + 1
             logger.debug("Incremented error for host: '%s', errors: %s", host, self.cache_hosts_with_errors[host])
         else:
