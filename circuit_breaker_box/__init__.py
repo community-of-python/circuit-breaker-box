@@ -3,7 +3,7 @@ from circuit_breaker_box.circuit_breaker_in_memory import CircuitBreakerInMemory
 from circuit_breaker_box.circuit_breaker_redis import CircuitBreakerRedis
 from circuit_breaker_box.common_types import ResponseType
 from circuit_breaker_box.errors import BaseCircuitBreakerError, HostUnavailableError
-from circuit_breaker_box.retryer import Retrier
+from circuit_breaker_box.retrier import Retrier
 
 
 __all__ = [

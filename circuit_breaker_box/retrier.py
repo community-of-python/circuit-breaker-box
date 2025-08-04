@@ -22,7 +22,7 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
     retry_cause: retry_clause_types
     circuit_breaker: BaseCircuitBreaker | None = None
 
-    async def retry(  # type: ignore[return]
+    async def retry(
         self,
         coroutine: typing.Callable[P, typing.Awaitable[ResponseType]],
         /,
@@ -34,7 +34,7 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
             msg = "'host' argument should be defined"
             raise ValueError(msg)
 
-        for attempt in tenacity.Retrying(  # noqa: RET503
+        for attempt in tenacity.Retrying(
             stop=self.stop_rule,
             wait=self.wait_strategy,
             retry=self.retry_cause,
@@ -51,6 +51,8 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
                         await self.circuit_breaker.increment_failures_count(host)
 
                 return await coroutine(*args, **kwargs)
+        msg = "Unreachable section"  # pragma: no cover
+        raise RuntimeError(msg)  # pragma: no cover
 
     @staticmethod
     def do_before_attempts(retry_state: tenacity.RetryCallState) -> None:
