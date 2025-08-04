@@ -51,7 +51,7 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
                         await self.circuit_breaker.increment_failures_count(host)
 
                 return await coroutine(*args, **kwargs)
-        msg = "Unreachable section"  # pragma: no cover
+        msg = "Unreachable code"  # pragma: no cover
         raise RuntimeError(msg)  # pragma: no cover
 
     @staticmethod

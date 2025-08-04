@@ -39,25 +39,30 @@ class CircuitBreakerRedis(BaseCircuitBreaker):
         is_expire_set: bool = await self.redis_connection.expire(redis_key, self.reset_timeout_in_seconds)
         logger.debug("Expire set for redis_key: %s, is_expire_set: %s", redis_key, is_expire_set)
 
-    @tenacity.retry(
-        stop=tenacity.stop_after_attempt(3),
-        wait=tenacity.wait_exponential_jitter(),
-        retry=tenacity.retry_if_exception_type((WatchError, RedisConnectionError, ConnectionResetError, TimeoutError)),
-        reraise=True,
-        before=_log_attempt,
-    )
     async def is_host_available(self, host: str) -> bool:
-        failures_count: typing.Final = int(await self.redis_connection.get(f"circuit-breaker-{host}") or 0)
-        is_available: bool = failures_count <= self.max_failure_count
-        logger.warning(
-            "host: '%s', failures_count: '%s', self.max_failure_count: '%s', is_available: '%s'",
-            host,
-            failures_count,
-            self.max_failure_count,
-            is_available,
-        )
-        return is_available
+        for attempt in tenacity.Retrying(
+            stop=tenacity.stop_after_attempt(3),
+            wait=tenacity.wait_exponential_jitter(),
+            retry=tenacity.retry_if_exception_type(
+                (WatchError, RedisConnectionError, ConnectionResetError, TimeoutError)
+            ),
+            reraise=True,
+            before=_log_attempt,
+        ):
+            with attempt:
+                failures_count = int(await self.redis_connection.get(f"circuit-breaker-{host}") or 0)
+                is_available: bool = failures_count <= self.max_failure_count
+                logger.warning(
+                    "host: '%s', failures_count: '%s', self.max_failure_count: '%s', is_available: '%s'",
+                    host,
+                    failures_count,
+                    self.max_failure_count,
+                    is_available,
+                )
+                return is_available
+        msg = "Unreachable code"  # pragma: no cover
+        raise RuntimeError(msg)  # pragma: no cover
 
     async def raise_host_unavailable_error(self, host: str) -> typing.NoReturn:
-        msg = f"Host {host} banned by circutbreaker for {(self.reset_timeout_in_seconds / 60):.2f} minutes."
+        msg = f"Host {host} banned by circuitbreaker for {(self.reset_timeout_in_seconds / 60):.2f} minutes."
         raise errors.HostUnavailableError(msg)
