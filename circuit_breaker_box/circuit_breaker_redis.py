@@ -1,13 +1,17 @@
+import contextlib
 import dataclasses
 import logging
 import typing
 
 import tenacity
-from redis import asyncio as aioredis
-from redis.exceptions import ConnectionError as RedisConnectionError
-from redis.exceptions import WatchError
 
 from circuit_breaker_box import BaseCircuitBreaker, errors
+
+
+with contextlib.suppress(ImportError):
+    from redis import asyncio as aioredis
+    from redis.exceptions import ConnectionError as RedisConnectionError
+    from redis.exceptions import WatchError
 
 
 logger = logging.getLogger(__name__)

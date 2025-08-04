@@ -4,7 +4,7 @@ import logging
 import httpx
 import tenacity
 
-from circuit_breaker_box.retryer import Retrier
+from circuit_breaker_box.retrier import Retrier
 
 
 MAX_RETRIES = 4
