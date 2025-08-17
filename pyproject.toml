@@ -8,7 +8,7 @@ dependencies = [
     "httpx",
     "tenacity",
 ]
-dynamic = ["version"]
+version = "0"
 authors = [{ name = "community-of-python" }]
 keywords = [
     "python",
@@ -40,11 +40,12 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
+requires = ["uv_build"]
+build-backend = "uv_build"
 
-[tool.hatch.version]
-source = "vcs"
+[tool.uv.build-backend]
+module-name = "circuit_breaker_box"
+module-root = ""
 
 [tool.mypy]
 python_version = "3.10"
