@@ -26,7 +26,7 @@ class CircuitBreakerRedis(BaseCircuitBreaker):
     redis_connection: "aioredis.Redis[str]"
 
     async def increment_failures_count(self, host: str) -> None:
-        for attempt in tenacity.Retrying(
+        async for attempt in tenacity.AsyncRetrying(
             stop=tenacity.stop_after_attempt(3),
             wait=tenacity.wait_exponential_jitter(),
             retry=tenacity.retry_if_exception_type(
@@ -43,7 +43,7 @@ class CircuitBreakerRedis(BaseCircuitBreaker):
                 logger.debug("Expire set for redis_key: %s, is_expire_set: %s", redis_key, is_expire_set)
 
     async def is_host_available(self, host: str) -> bool:
-        for attempt in tenacity.Retrying(
+        async for attempt in tenacity.AsyncRetrying(
             stop=tenacity.stop_after_attempt(3),
             wait=tenacity.wait_exponential_jitter(),
             retry=tenacity.retry_if_exception_type(
