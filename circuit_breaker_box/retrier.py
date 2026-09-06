@@ -34,7 +34,7 @@ class Retrier(abc.ABC, typing.Generic[ResponseType]):
             msg = "'host' argument should be defined"
             raise ValueError(msg)
 
-        for attempt in tenacity.Retrying(
+        async for attempt in tenacity.AsyncRetrying(
             stop=self.stop_rule,
             wait=self.wait_strategy,
             retry=self.retry_cause,
